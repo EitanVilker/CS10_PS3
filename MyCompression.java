@@ -37,6 +37,6 @@ public class MyCompression {
 	}
 	
 	public static void main(String[] args) {
-		BufferedReader input = new BufferedReader(new FileReader("TestCase.txt"));
+		BufferedReader input = new BufferedReader(new FileReader(path + "TestCase.txt"));
 	}
 }
