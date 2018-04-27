@@ -23,7 +23,7 @@ public class FrequencyMapper {
 				}
 			}
 			catch (IOException e) {
-				iAmDone = !iAmDone;
+				iAmDone = true;
 			}
 		}
 		return charFreq;
