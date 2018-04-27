@@ -4,7 +4,7 @@ public class ValuedCharacter {
 	protected int frequency;
 
 
-	public void ValuedCharacter(String name, int frequency){
+	public  ValuedCharacter(String name, int frequency){
 		this.name = name;
 		this.frequency = frequency;
 	}
