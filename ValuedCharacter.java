@@ -1,27 +1,27 @@
 
 public class ValuedCharacter {
-	protected String name;
-	protected int frequency;
+	protected Character name;
+	protected Integer frequency;
 
 
-	public  ValuedCharacter(String name, int frequency){
+	public  ValuedCharacter(Character name, Integer frequency){
 		this.name = name;
 		this.frequency = frequency;
 	}
 	
-	public String getName() {
+	public Character getName() {
 		return name;
 	}
 	
-	public void setName(String name) {
+	public void setName(Character name) {
 		this.name = name;
 	}
 	
-	public int getFrequency() {
+	public Integer getFrequency() {
 		return frequency;
 	}
 	
-	public void setFrequency(int frequency) {
+	public void setFrequency(Integer frequency) {
 		this.frequency = frequency;
 	}
 }

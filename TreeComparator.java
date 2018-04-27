@@ -1,9 +1,13 @@
+import java.util.TreeMap;
+import java.io.BufferedReader;
+import MyCompression.java.*;
 
 public class TreeComparator {
-	
-	for (char key: charFreq.keySet()) {
-		ValuedCharacter c = new ValuedCharacter(String key, int charFreq.get(key));
+
+	public TreeComparator(TreeMap<Character, Integer> charFreq) {
+		for (Character key: charFreq.keySet()) {
+			ValuedCharacter c = new ValuedCharacter(key, charFreq.get(key));
+		}
+		BST<String, Integer> tree = new BST<String, Integer>();
 	}
-	BST<String, Integer> tree = new BST<String, Integer>();
-	
 }
