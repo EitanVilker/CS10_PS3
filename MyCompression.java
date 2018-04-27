@@ -1,13 +1,10 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeMap;
 
-/**
- * Count the frequency of all items in a document, return a list of character frequencies
- * @author alowverus
- *
- */
-public class FrequencyMapper {
+public class MyCompression {
+	
 	public TreeMap<Character, Integer> getFrequencies(BufferedReader input) {		
 		TreeMap<Character, Integer> charFreq = new TreeMap<Character, Integer>();
 		boolean iAmDone = false;
@@ -27,5 +24,19 @@ public class FrequencyMapper {
 			}
 		}
 		return charFreq;
+	}
+	
+	public BufferedReader compressFile(BufferedReader input) {
+		BufferedReader compressed = input;
+		return compressed;
+	}
+	
+	public BufferedReader decompressFile(BufferedReader input) {
+		BufferedReader decompressed = input;
+		return decompressed;
+	}
+	
+	public static void main(String[] args) {
+		BufferedReader input = new BufferedReader(new FileReader("SA3_PicProcessing/baker-400-300.jpg"));
 	}
 }
