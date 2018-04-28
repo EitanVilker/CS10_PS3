@@ -20,8 +20,7 @@ public class TreeComparator implements Comparator {
 		PriorityQueue<BST<Character, Integer>> theQueue = new PriorityQueue<BST<Character, Integer>>();
 		for (Character key: charFreq.keySet()) {
 			ValuedCharacter c = new ValuedCharacter(key, charFreq.get(key));
-			BST<ValuedCharacter, String> tree = new BST<ValuedCharacter, String>();
-			tree.insert(c, "0");
+			BST<Integer, ValuedCharacter> tree = new BST<Integer, ValuedCharacter>(c.getFrequency(), c, null, null);
 			theQueue.add(tree);
 		}
 		
