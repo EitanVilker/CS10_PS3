@@ -3,9 +3,11 @@ import java.util.*;
 
 /**
  * Generic binary search tree
+ * Modified for use with compression algorithm
  *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Fall 2012
  * @author CBK, Fall 2016, min
+ * @author Eitan Vilker, Aidan Low
  */
 
 public class BST<K extends Comparable<K>,V> {
@@ -182,40 +184,31 @@ public class BST<K extends Comparable<K>,V> {
 			return new BST<String,String>(pieces[0], pieces[1]);
 		}
 	}
-
+	
 	/**
-	 * Some tree testing
+	 * Getters & Setters for Left, Right, Key, Value
 	 */
-	public static void main(String[] args) throws Exception {
-		BST<String,String> t = parseBST("((a:1,c:3)b:2,(e:5,g:8)f:6)d:4");
-		System.out.println("initial: " + t);
-		System.out.println("min: " + t.min() + " == " + t.minIter());
-
-		System.out.println("finding a");
-		System.out.println("found a = "+t.find("a"));
-
-		System.out.println("finding h");
-		try {
-			System.out.println("found h = "+t.find("h"));
+	public BST<K,V> getLeft() {return left;}
+	public BST<K,V> getRight() {return right;}
+	public K getKey() {return key;}
+	public V getValue() {return value;}
+	public void setLeft(BST<K, V> left) {this.left = left;}
+	public void setRight(BST<K, V> right) {this.right = right;}
+	public void setKey(K key) {this.key = key;}
+	public void setValue(V value) {this.value = value;}
+	
+	/**
+	 * Embellish map with key binary pairs
+	 */
+	public void makeBinaryStrings(TreeMap<Character, String> map, String s) {
+		if (hasLeft()) {
+			makeBinaryStrings(map, s + "1");
 		}
-		catch (InvalidKeyException e) {
-			System.err.println(e);
+		if (hasRight()) {
+			makeBinaryStrings(map, s + "0");
 		}
-
-		t.insert("i", "10");
-		t.insert("j", "11");
-		t.insert("h", "9");
-		System.out.println("inserted i,j,j: " + t);
-		System.out.println("finding h");
-		System.out.println("found h = "+t.find("h"));
-
-		t = t.delete("a");
-		System.out.println("deleted a: " + t);
-		t = t.delete("c");
-		System.out.println("deleted c: " + t);
-		t = t.delete("g");
-		System.out.println("deleted g: " + t);
-		t = t.delete("f");
-		System.out.println("deleted f: " + t);
+		if (isLeaf()) {
+			map.put(((ValuedCharacter) value).getName(), s);
+		}
 	}
 }
