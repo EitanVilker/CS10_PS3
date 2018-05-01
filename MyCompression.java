@@ -7,7 +7,7 @@ import java.util.*;
 
 public class MyCompression {
 	
-	public static final String filename = "TestCase";
+	public static final String filename = "USConstitution";
 	
 	//public static final String filepath = "inputs/WarAndPeace.txt";
 	
@@ -84,26 +84,62 @@ public class MyCompression {
 			BST<Integer, Character> theTree = theQueue.remove();
 			TreeMap<Character, String> binaryMap = new TreeMap<Character, String>();
 			theTree.makeBinaryStrings(binaryMap, "");
+
+			// Generate compressed file as a string for reference, cross-referencing input file with dictionary, save to FilenameCompressed.txt
+			BufferedWriter compressedWrittenOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "CompressedText.txt"));
+			String outputString = "";
+			for (int i = 0; i < fileString.length(); i ++) {
+				outputString += binaryMap.get(fileString.charAt(i));
+			}
+			compressedWrittenOutput.write(outputString);
+			compressedWrittenOutput.close();
+			
+			// Generate compressed file as a series of bits, cross-referencing input file with dictionary, save to FilenameCompressed.txt
+			BufferedBitWriter compressedOutput = new BufferedBitWriter("Outputs/" + filename + "Compressed.txt");
+			for (int i = 0; i < fileString.length(); i ++) {
+				String binaryCharString = binaryMap.get(fileString.charAt(i));
+				for (int k = 0; k < binaryCharString.length(); k ++) {
+					Character currentBitChar = binaryCharString.charAt(k);
+					if (currentBitChar == '1') {
+						compressedOutput.writeBit(true);
+					}
+					else {
+						compressedOutput.writeBit(false);
+					}
+				}
+			}
+			compressedOutput.close();
 			
 			/**
 			 * EVERYTHING UP TO HERE WORKS.
 			 * THE BINARY MAP IS FUNCTIONAL.
-			 * NOW WE NEED TO COMPRESS / DECOMPRESS.
+			 * COMPRESSION WORKS, INDEXES CORRECTLY TO MAP.
+			 * NOW WE NEED TO DECOMPRESS.
 			 */
-			
-			// Generate compressed file, cross-referencing input file with dictionary, save to FilenameCompressed.txt
-			BufferedBitWriter bitOutput = new BufferedBitWriter("Outputs/" + filename + "Compressed.txt");
-			
-			// Generate decompressed file, cross-referencing input file with dictionary
-			BufferedBitReader bitInput = new BufferedBitReader("Inputs/" + filename + ".txt");
-			while (bitInput.hasNext()) {
-				  boolean bit = bitInput.readBit();
-				  // Find bit sequence, identify corresponding code for character, and write to file
-				  bitOutput.writeBit(bit);
-			}
-			
-			// Save decompressed file to FilenameDecompressed.txt'
 
+			// Generate decompressed file, cross-referencing input file with dictionary
+			BufferedBitReader compressedInput = new BufferedBitReader("Outputs/" + filename + "Compressed.txt");
+			BufferedWriter decompressedOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "Decompressed.txt"));
+			BST<Integer, Character> currentTree = theTree;
+			String s = "";
+			while (compressedInput.hasNext()) {
+				if (currentTree.isLeaf()) {
+	  			decompressedOutput.write(currentTree.getValue());
+	  			currentTree = theTree;
+  				}
+  				else {
+				  	boolean bit = compressedInput.readBit();
+				  	if (!bit) {
+					  	currentTree = currentTree.getRight();
+				  	}
+				  	else {
+				  		currentTree = currentTree.getLeft();
+	  				}
+	  			}	  
+			}
+  			decompressedOutput.write(currentTree.getValue());
+			compressedInput.close();
+			decompressedOutput.close();
 		}
 		catch(FileNotFoundException e) {
 			System.out.println(e.getMessage());
