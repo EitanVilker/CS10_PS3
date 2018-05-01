@@ -202,13 +202,40 @@ public class BST<K extends Comparable<K>,V> {
 	 */
 	public void makeBinaryStrings(TreeMap<Character, String> map, String s) {
 		if (hasLeft()) {
-			makeBinaryStrings(map, s + "1");
+			left.makeBinaryStrings(map, s + "1");
 		}
 		if (hasRight()) {
-			makeBinaryStrings(map, s + "0");
+			right.makeBinaryStrings(map, s + "0");
 		}
 		if (isLeaf()) {
-			map.put(((ValuedCharacter) value).getName(), s);
+			map.put((char)value, s);
 		}
+	}
+	
+	/**
+	 * Return size of tree
+	 */
+	public int size() {
+		int mySize = 1;
+		if (hasLeft()) {
+			mySize += left.size();
+		}
+		if (hasRight()) {
+			mySize += right.size();
+		}
+		System.out.println(hasLeft());
+		return mySize;
+	}
+	
+	public String getValues() {
+		String myValue = value.toString();
+		if (hasLeft()) {
+			myValue += ", " + left.getValues();
+		}
+		if (hasRight()) {
+			myValue += ", " + right.getValues();
+		}
+		System.out.println(hasLeft());
+		return myValue;
 	}
 }
