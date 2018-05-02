@@ -4,7 +4,7 @@ import java.util.*;
 
 public class MyCompression {
 	
-	public static final String filename = "USConstitution";
+	public static final String filename = "TestCase";
 	
 	public BufferedReader compressFile(BufferedReader input) {
 		BufferedReader compressed = input;
@@ -28,23 +28,19 @@ public class MyCompression {
 		try {
 			// Read in the file, generate frequency table
 			BufferedReader inputFile = new BufferedReader(new FileReader("Inputs/" + filename + ".txt"));
-			String fileString = "";
 			HashMap<Character, Integer> charFreq = new HashMap<Character, Integer>();
 			int q = 0;
 			int c  = inputFile.read();
 			while (c!= -1) {
-
+				char nextChar = (char)c;
+				if (charFreq.get(nextChar) == null) {
+					charFreq.put(nextChar, 1);
+				}
+				else {
+					int thisFreq = charFreq.get(nextChar);
+					charFreq.put(nextChar, thisFreq + 1);
+				}
 				
-					char nextChar = (char)c;
-					if (charFreq.get(nextChar) == null) {
-						charFreq.put(nextChar, 1);
-					}
-					else {
-						int thisFreq = charFreq.get(nextChar);
-						charFreq.put(nextChar, thisFreq + 1);
-					}
-					fileString += c;
-			
 				c = inputFile.read();
 
 				q ++;
@@ -52,7 +48,7 @@ public class MyCompression {
 					System.out.println(q);
 				}
 			}
-			inputFile.close();			
+			
 			
 			// Generate a priority queue from the given HashMap, using frequencies as keys
 			PriorityQueue<BST<Integer, Character>> theQueue = new PriorityQueue<BST<Integer, Character>>(new TreeComparator());
@@ -60,7 +56,7 @@ public class MyCompression {
 				BST<Integer, Character> tree = new BST<Integer, Character>(charFreq.get(key), key, null, null);
 				theQueue.add(tree);
 			}
-			// Create the tree by iterating through the prio queue
+			// Create the tree by iterating through the priority queue
 			while (theQueue.size() > 1) {
 				BST<Integer, Character> left = theQueue.remove();
 				BST<Integer, Character> right = theQueue.remove();
@@ -77,8 +73,9 @@ public class MyCompression {
 			// Generate save bits into FilenameCompressedText.txt for reference and testing.
 			BufferedWriter compressedWrittenOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "CompressedText.txt"));
 			BufferedBitWriter compressedOutput = new BufferedBitWriter("Outputs/" + filename + "Compressed.txt");
-			for (int i = 0; i < fileString.length(); i ++) {
-				String binaryCharString = binaryMap.get(fileString.charAt(i));
+			int d  = inputFile.read();
+			while (d!= -1) {
+				String binaryCharString = binaryMap.get((char)d);
 				for (int k = 0; k < binaryCharString.length(); k ++) {
 					Character currentBitChar = binaryCharString.charAt(k);
 					if (currentBitChar == '1') {
@@ -88,11 +85,12 @@ public class MyCompression {
 						compressedOutput.writeBit(false);
 					}
 				}
-				compressedWrittenOutput.write(binaryCharString);
+				//compressedWrittenOutput.write(binaryCharString);
 				
 			}
 			compressedWrittenOutput.close();
 			compressedOutput.close();
+			inputFile.close();			
 
 			// Generate decompressed file, cross-referencing input file with dictionary
 			BufferedBitReader compressedInput = new BufferedBitReader("Outputs/" + filename + "Compressed.txt");
@@ -125,7 +123,7 @@ public class MyCompression {
 			e.printStackTrace();
 		}
 		finally {
-			
+			System.out.println("WALRUS FOUND");
 		}
 	}
 }
