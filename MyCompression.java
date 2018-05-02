@@ -49,6 +49,7 @@ public class MyCompression {
 				}
 			}
 			
+			inputFile.close();			
 			
 			// Generate a priority queue from the given HashMap, using frequencies as keys
 			PriorityQueue<BST<Integer, Character>> theQueue = new PriorityQueue<BST<Integer, Character>>(new TreeComparator());
@@ -71,12 +72,12 @@ public class MyCompression {
 						
 			// Generate compressed file as a series of bits, cross-referencing input file with dictionary, save to FilenameCompressed.txt
 			// Generate save bits into FilenameCompressedText.txt for reference and testing.
-			BufferedWriter compressedWrittenOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "CompressedText.txt"));
 			BufferedBitWriter compressedOutput = new BufferedBitWriter("Outputs/" + filename + "Compressed.txt");
-			int d  = inputFile.read();
-			while (d!= -1) {
+			BufferedReader secondInputFile = new BufferedReader(new FileReader("Inputs/" + filename + ".txt"));
+			int d = secondInputFile.read();
+			while (d != -1) {
 				String binaryCharString = binaryMap.get((char)d);
-				for (int k = 0; k < binaryCharString.length(); k ++) {
+				for (int k = 0; k < binaryCharString.length(); k++) {
 					Character currentBitChar = binaryCharString.charAt(k);
 					if (currentBitChar == '1') {
 						compressedOutput.writeBit(true);
@@ -84,13 +85,11 @@ public class MyCompression {
 					else {
 						compressedOutput.writeBit(false);
 					}
-				}
-				//compressedWrittenOutput.write(binaryCharString);
-				
+					d = secondInputFile.read();
+				}				
 			}
-			compressedWrittenOutput.close();
 			compressedOutput.close();
-			inputFile.close();			
+			secondInputFile.close();
 
 			// Generate decompressed file, cross-referencing input file with dictionary
 			BufferedBitReader compressedInput = new BufferedBitReader("Outputs/" + filename + "Compressed.txt");
