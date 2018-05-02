@@ -1,6 +1,3 @@
-/**
- * GET HELP REGARDING COMPARABLES. CAN'T COMPARE ONE BST WITH ANOTHER.
- */
 
 import java.io.*;
 import java.util.*;
@@ -8,24 +5,6 @@ import java.util.*;
 public class MyCompression {
 	
 	public static final String filename = "USConstitution";
-	
-	//public static final String filepath = "inputs/WarAndPeace.txt";
-	
-	public static TreeMap<Character, Integer> getFrequencies(String input) {		
-		TreeMap<Character, Integer> charFreq = new TreeMap<Character, Integer>();
-		int length = input.length();
-		for (int i = 0; i < length; i ++) {
-			Character nextChar = input.charAt(i);
-			if (charFreq.get(nextChar) == null) {
-				charFreq.put(nextChar, 1);
-			}
-			else {
-				int thisFreq = charFreq.get(nextChar);
-				charFreq.put(nextChar, thisFreq + 1);
-			}
-		}
-		return charFreq;
-	}
 	
 	public BufferedReader compressFile(BufferedReader input) {
 		BufferedReader compressed = input;
@@ -45,26 +24,38 @@ public class MyCompression {
 		return s;
 	}
 	
-	public static void main(String[] args) { 		// Read in the file
+	public static void main(String[] args) { 
 		try {
+			// Read in the file, generate frequency table
 			BufferedReader inputFile = new BufferedReader(new FileReader("Inputs/" + filename + ".txt"));
 			String fileString = "";
 			boolean finished = false;
+			HashMap<Character, Integer> charFreq = new HashMap<Character, Integer>();
+			int q = 0;
 			while (!finished) {
 				int next = inputFile.read();
 				if (next == -1) {
 					finished = true;
 				}
 				else {
-					fileString += (char)(next);
+					char nextChar = (char)next;
+					if (charFreq.get(nextChar) == null) {
+						charFreq.put(nextChar, 1);
+					}
+					else {
+						int thisFreq = charFreq.get(nextChar);
+						charFreq.put(nextChar, thisFreq + 1);
+					}
+					fileString += next;
+				}
+				q ++;
+				if (q % 10000 == 0) {
+					System.out.println(q);
 				}
 			}
-			inputFile.close();
-
-			// Generate frequency table
-			TreeMap<Character, Integer> charFreq = getFrequencies(fileString);
+			inputFile.close();			
 			
-			// Generate a priority queue from the given TreeMap, using frequencies as keys
+			// Generate a priority queue from the given HashMap, using frequencies as keys
 			PriorityQueue<BST<Integer, Character>> theQueue = new PriorityQueue<BST<Integer, Character>>(new TreeComparator());
 			for (Character key: charFreq.keySet()) {
 				BST<Integer, Character> tree = new BST<Integer, Character>(charFreq.get(key), key, null, null);
@@ -75,26 +66,17 @@ public class MyCompression {
 				BST<Integer, Character> left = theQueue.remove();
 				BST<Integer, Character> right = theQueue.remove();
 				int intTotal = left.getKey() + right.getKey();
-				BST<Integer, Character> dummy = new BST<Integer, Character>(intTotal, 'z');
-				dummy.setLeft(left);
-				dummy.setRight(right);
+				BST<Integer, Character> dummy = new BST<Integer, Character>(intTotal, 'z', left, right);
 				theQueue.add(dummy);
 			}
 			// Generate 1/0 numbers from the tree
 			BST<Integer, Character> theTree = theQueue.remove();
-			TreeMap<Character, String> binaryMap = new TreeMap<Character, String>();
+			HashMap<Character, String> binaryMap = new HashMap<Character, String>();
 			theTree.makeBinaryStrings(binaryMap, "");
-
-			// Generate compressed file as a string for reference, cross-referencing input file with dictionary, save to FilenameCompressed.txt
-			BufferedWriter compressedWrittenOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "CompressedText.txt"));
-			String outputString = "";
-			for (int i = 0; i < fileString.length(); i ++) {
-				outputString += binaryMap.get(fileString.charAt(i));
-			}
-			compressedWrittenOutput.write(outputString);
-			compressedWrittenOutput.close();
-			
+						
 			// Generate compressed file as a series of bits, cross-referencing input file with dictionary, save to FilenameCompressed.txt
+			// Generate save bits into FilenameCompressedText.txt for reference and testing.
+			BufferedWriter compressedWrittenOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "CompressedText.txt"));
 			BufferedBitWriter compressedOutput = new BufferedBitWriter("Outputs/" + filename + "Compressed.txt");
 			for (int i = 0; i < fileString.length(); i ++) {
 				String binaryCharString = binaryMap.get(fileString.charAt(i));
@@ -107,21 +89,16 @@ public class MyCompression {
 						compressedOutput.writeBit(false);
 					}
 				}
+				compressedWrittenOutput.write(binaryCharString);
+				
 			}
+			compressedWrittenOutput.close();
 			compressedOutput.close();
-			
-			/**
-			 * EVERYTHING UP TO HERE WORKS.
-			 * THE BINARY MAP IS FUNCTIONAL.
-			 * COMPRESSION WORKS, INDEXES CORRECTLY TO MAP.
-			 * NOW WE NEED TO DECOMPRESS.
-			 */
 
 			// Generate decompressed file, cross-referencing input file with dictionary
 			BufferedBitReader compressedInput = new BufferedBitReader("Outputs/" + filename + "Compressed.txt");
 			BufferedWriter decompressedOutput = new BufferedWriter(new FileWriter("Outputs/" + filename + "Decompressed.txt"));
 			BST<Integer, Character> currentTree = theTree;
-			String s = "";
 			while (compressedInput.hasNext()) {
 				if (currentTree.isLeaf()) {
 	  			decompressedOutput.write(currentTree.getValue());

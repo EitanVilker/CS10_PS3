@@ -200,7 +200,7 @@ public class BST<K extends Comparable<K>,V> {
 	/**
 	 * Embellish map with key binary pairs
 	 */
-	public void makeBinaryStrings(TreeMap<Character, String> map, String s) {
+	public void makeBinaryStrings(HashMap<Character, String> map, String s) {
 		if (hasLeft()) {
 			left.makeBinaryStrings(map, s + "1");
 		}
