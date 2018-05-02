@@ -29,16 +29,13 @@ public class MyCompression {
 			// Read in the file, generate frequency table
 			BufferedReader inputFile = new BufferedReader(new FileReader("Inputs/" + filename + ".txt"));
 			String fileString = "";
-			boolean finished = false;
 			HashMap<Character, Integer> charFreq = new HashMap<Character, Integer>();
 			int q = 0;
-			while (!finished) {
-				int next = inputFile.read();
-				if (next == -1) {
-					finished = true;
-				}
-				else {
-					char nextChar = (char)next;
+			int c  = inputFile.read();
+			while (c!= -1) {
+
+				
+					char nextChar = (char)c;
 					if (charFreq.get(nextChar) == null) {
 						charFreq.put(nextChar, 1);
 					}
@@ -46,8 +43,10 @@ public class MyCompression {
 						int thisFreq = charFreq.get(nextChar);
 						charFreq.put(nextChar, thisFreq + 1);
 					}
-					fileString += next;
-				}
+					fileString += c;
+			
+				c = inputFile.read();
+
 				q ++;
 				if (q % 10000 == 0) {
 					System.out.println(q);
